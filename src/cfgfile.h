@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define CFGFILE_H_
 
 #include <limits.h>
+#include "userpriv.h"
 
 #define MAX_AXES		64
 #define MAX_BUTTONS		64
@@ -48,7 +49,7 @@ struct cfg {
 };
 
 void default_cfg(struct cfg *cfg);
-int read_cfg(const char *fname, struct cfg *cfg);
+int read_cfg(const char *fname, struct cfg *cfg, userid_struct *userids);
 int write_cfg(const char *fname, struct cfg *cfg);
 
 #endif	/* CFGFILE_H_ */

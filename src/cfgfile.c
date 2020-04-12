@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "cfgfile.h"
 #include "logger.h"
 #include "spnavd.h"
+#include "userpriv.h"
 
 enum {TX, TY, TZ, RX, RY, RZ};
 
@@ -76,13 +77,15 @@ void default_cfg(struct cfg *cfg)
 		} \
 	} while(0)
 
-int read_cfg(const char *fname, struct cfg *cfg)
+int read_cfg(const char *fname, struct cfg *cfg, userid_struct *userids)
 {
 	FILE *fp;
 	char buf[512];
 	struct flock flk;
 	int num_devid = 0;
 	/*int num_devnames = 0;*/
+
+        int username_from_cfg = 0, groupname_from_cfg = 0;
 
 	default_cfg(cfg);
 
@@ -313,7 +316,23 @@ int read_cfg(const char *fname, struct cfg *cfg)
 				continue;
 			}
 
-		} else {
+		} else if(strcmp(key_str, "user") == 0) {
+                    if(user_set_by_cmdline(userids) == 1) {
+                        logmsg(LOG_WARNING, "started with -u option - ignoring user setting in configfile\n");
+                    } else if(set_runas_uid (userids, val_str) == 0) {
+                        logmsg(LOG_WARNING, "invalid configuration value for %s, expected a valid username (%s doesn't exists) - resuming with invoked user\n", key_str, val_str);
+                    } else {
+                        username_from_cfg = 1;
+                    }
+                } else if(strcmp(key_str, "group") == 0) {
+                    if(group_set_by_cmdline(userids) == 1) {
+                        logmsg(LOG_WARNING, "started with -g option - ignoring group setting in configfile\n");
+                    } else if(set_runas_gid (userids, val_str) == 0) {
+                        logmsg(LOG_WARNING, "invalid configuration value for %s, expected a valid groupname (%s doesn't exists) - resuming with invoked group\n", key_str, val_str);
+                    } else {
+                        groupname_from_cfg = 1;
+                    }
+                } else {
 			logmsg(LOG_WARNING, "unrecognized config option: %s\n", key_str);
 		}
 	}
@@ -325,6 +344,12 @@ int read_cfg(const char *fname, struct cfg *cfg)
 	fcntl(fileno(fp), F_SETLK, &flk);
 
 	fclose(fp);
+
+        if(username_from_cfg || groupname_from_cfg) {
+            test_initial_user_privileges(userids);
+            start_daemon_privileges(userids);
+        }
+
 	return 0;
 }
 

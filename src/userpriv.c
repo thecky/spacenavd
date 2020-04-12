@@ -38,16 +38,19 @@ void set_initial_user_privileges(userid_struct *userids)
         /* default assumption: we can not change effective uid / gid */
         userids->spnavd_can_restore_uid = 0;
         userids->spnavd_can_restore_gid = 0;
+
+        userids->spnavd_cmdline_user = 0;
+        userids->spnavd_cmdline_group = 0;
     }
 }
 
 void test_initial_user_privileges(userid_struct *userids)
 {
-    /* default assumption: we can not change effective uid / gid */
-    userids->spnavd_can_restore_uid = 0;
-    userids->spnavd_can_restore_gid = 0;
-
     if(userids != NULL) {
+        /* default assumption: we can not change effective uid / gid */
+        userids->spnavd_can_restore_uid = 0;
+        userids->spnavd_can_restore_gid = 0;
+
         /* check the effective uid change */
         if(userids->spnavd_daemon_runas_uid != -1) {
             if (userids->spnavd_daemon_runas_uid != userids->spnavd_invoked_as_uid) {
@@ -142,4 +145,22 @@ void stop_daemon_privileges(userid_struct *userids)
             }
         }
     }
+}
+
+int user_set_by_cmdline(userid_struct *userids)
+{
+    if(userids != NULL) {
+        return userids->spnavd_cmdline_user;
+    }
+
+    return 0;
+}
+
+int group_set_by_cmdline(userid_struct *userids)
+{
+    if(userids != NULL) {
+        return userids->spnavd_cmdline_group;
+    }
+
+    return 0;
 }

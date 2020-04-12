@@ -171,8 +171,13 @@ int main(int argc, char **argv)
             return 1;
         }
 
-	userids->spnavd_runas_daemon = become_daemon;
-	test_initial_user_privileges(userids);
+        if(userids != NULL) {
+            userids->spnavd_runas_daemon = become_daemon;
+            userids->spnavd_cmdline_user = use_username;
+            userids->spnavd_cmdline_group = use_groupname;
+        }
+
+        test_initial_user_privileges(userids);
 
 	if((pid = find_running_daemon()) != -1) {
 		fprintf(stderr, "Spacenav daemon already running (pid: %d). Aborting.\n", pid);
@@ -190,7 +195,7 @@ int main(int argc, char **argv)
 
 	logmsg(LOG_INFO, "Spacenav daemon " VERSION "\n");
 
-	read_cfg(cfgfile, &cfg);
+	read_cfg(cfgfile, &cfg, userids);
 
 	signal(SIGINT, sig_handler);
 	signal(SIGTERM, sig_handler);
@@ -454,7 +459,7 @@ static void sig_handler(int s)
 
 	switch(s) {
 	case SIGHUP:
-		read_cfg(cfgfile, &cfg);
+		read_cfg(cfgfile, &cfg, userids);
 		if(cfg.led != prev_led) {
 			struct device *dev = get_devices();
 			while(dev) {

@@ -30,6 +30,8 @@ typedef struct {
     int   spnavd_can_restore_uid;       /* spnavd can restore the invoked uid */
     int   spnavd_can_restore_gid;       /* spnavd can restore the invoked gid */
     int   spnavd_runas_daemon;          /* flag for running in daemonmode */
+    int   spnavd_cmdline_user;          /* spnavd started with -u (0-no / 1-yes) */
+    int   spnavd_cmdline_group;         /* spnavd started with -g (0-no / 1-yes) */
 } userid_struct;
 
 void set_initial_user_privileges(userid_struct *userids);
@@ -38,5 +40,7 @@ int set_runas_uid(userid_struct *userids, char *runas_lname);
 int set_runas_gid(userid_struct *userids, char *runas_gname);
 void start_daemon_privileges(userid_struct *userids);
 void stop_daemon_privileges(userid_struct *userids);
+int user_set_by_cmdline(userid_struct *userids);
+int group_set_by_cmdline(userid_struct *userids);
 
 #endif	/* USERPRIV_H_ */
