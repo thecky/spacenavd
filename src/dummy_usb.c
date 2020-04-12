@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include "logger.h"
 #include "dev.h"
+#include "userpriv.h"
 
 static const char *message =
 	"Unfortunately this version of spacenavd does not support USB devices on your "
@@ -55,7 +56,7 @@ int get_hotplug_fd(void)
 	return -1;
 }
 
-int handle_hotplug(void)
+int handle_hotplug(userids_struct *userids)
 {
 	return -1;
 }

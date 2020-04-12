@@ -36,7 +36,7 @@ int get_hotplug_fd(void)
 	return -1;
 }
 
-int handle_hotplug(void)
+int handle_hotplug(userids_struct *userids)
 {
 	return -1;
 }

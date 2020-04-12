@@ -22,9 +22,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "config.h"
 #include "event.h"
 #include "client.h"
+#include "userpriv.h"
 
-int init_unix(void);
-void close_unix(void);
+int init_unix(userid_struct *userids);
+void close_unix(userid_struct *userids);
 int get_unix_socket(void);
 
 void send_uevent(spnav_event *ev, struct client *c);

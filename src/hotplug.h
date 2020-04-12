@@ -18,9 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef SPNAV_HOTPLUG_H_
 #define SPNAV_HOTPLUG_H_
 
+#include <userpriv.h>
+
 int init_hotplug(void);
 void shutdown_hotplug(void);
 int get_hotplug_fd(void);
-int handle_hotplug(void);
+int handle_hotplug(userid_struct *userids);
 
 #endif	/* SPNAV_HOTPLUG_H_ */

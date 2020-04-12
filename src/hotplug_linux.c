@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #include "hotplug.h"
+#include "userpriv.h"
 #include "dev.h"
 #include "spnavd.h"
 #include "cfgfile.h"
@@ -88,7 +89,7 @@ int get_hotplug_fd(void)
 	return hotplug_fd;
 }
 
-int handle_hotplug(void)
+int handle_hotplug(userid_struct *userids)
 {
 	char buf[512];
 	read(hotplug_fd, buf, sizeof buf);
@@ -97,7 +98,7 @@ int handle_hotplug(void)
 		logmsg(LOG_DEBUG, "\nhandle_hotplug called\n");
 	}
 
-	if(init_devices() == -1) {
+	if(init_devices(userids) == -1) {
 		return -1;
 	}
 	return 0;

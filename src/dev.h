@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <limits.h>
 #include "config.h"
+#include "userpriv.h"
 
 struct dev_input;
 
@@ -42,7 +43,7 @@ struct device {
 	struct device *next;
 };
 
-int init_devices(void);
+int init_devices(userid_struct *userids);
 
 void remove_device(struct device *dev);
 
